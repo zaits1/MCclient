@@ -8,8 +8,8 @@ import requests  # Requires `pip install requests` if not already installed
 import sys
 
 CLIENT_VERSION = "1.0.2"  # Update this on each release
-UPDATE_URL = "https://raw.githubusercontent.com/zaits1/MCclient/main/PycharmProjects/PythonProject/cleint.py"
-VERSION_URL = "https://raw.githubusercontent.com/zaits1/MCclient/main/PycharmProjects/PythonProject/version.txt"
+UPDATE_URL = "https://raw.githubusercontent.com/zaits1/MCclient/main/client.py"
+VERSION_URL = "https://raw.githubusercontent.com/zaits1/MCclient/main/version.txt"
 
 SERVER_IP = "84.229.9.85"  # Change this to the server's actual IP
 CONTROL_PORT = 25566 # Must match the port in `server_control.py`
