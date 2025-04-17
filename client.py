@@ -1,13 +1,17 @@
+import shutil
+import tempfile
 import time
 
 import socket
 import tkinter as tk
 import threading
 import os
+from tkinter import messagebox
+
 import requests  # Requires `pip install requests` if not already installed
 import sys
 
-CLIENT_VERSION = "1.0.2"  # Update this on each release
+CLIENT_VERSION = "1.0.3"  # Update this on each release
 UPDATE_URL = "https://raw.githubusercontent.com/zaits1/MCclient/main/client.py"
 VERSION_URL = "https://raw.githubusercontent.com/zaits1/MCclient/main/version.txt"
 
@@ -81,19 +85,38 @@ btn_stop.pack(pady=10)
 
 def check_for_update():
     try:
+        # Check for latest version
         response = requests.get(VERSION_URL, timeout=3)
         latest_version = response.text.strip()
+
         if latest_version > CLIENT_VERSION:
+            # Update available
             lbl_status.config(text="Updating...", fg="orange")
+
+            # Get the new version of the script
             update_response = requests.get(UPDATE_URL, timeout=5)
-            script_path = os.path.realpath(__file__)
-            with open(script_path, 'w', encoding='utf-8') as f:
-                f.write(update_response.text)
+
+            # Save the updated script to a temporary file
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.py') as temp_file:
+                temp_file.write(update_response.content)
+                temp_script_path = temp_file.name
+
+            # Inform the user about the update
             lbl_status.config(text="Updated to latest version", fg="green")
             time.sleep(1)
-            os.execv(sys.executable, ['python'] + sys.argv)  # Restart script
+
+            # Close the GUI window or perform any cleanup
+            # Replace the old executable with the new one
+            exe_path = sys.executable
+
+            # Perform the update: move the new version to the original exe path
+            shutil.move(temp_script_path, exe_path)
+
+            # Restart the executable with the updated script
+            os.execv(exe_path, ['python'] + sys.argv)  # Restart the script
     except Exception as e:
         print(f"Update check failed: {e}")
+        messagebox.showerror("Error", "Update failed. Please try again later.")
 
 check_for_update()
 
